@@ -1,0 +1,3 @@
+include ':video_call'
+include ':app'
+rootProject.name = "FastCall"
