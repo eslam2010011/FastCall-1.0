@@ -12,9 +12,9 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.video_call.CallConfig;
-import com.video_call.CallFast;
-import com.video_call.Engine.CallState;
+ import com.video_call.Engine.CallState;
 import com.video_call.Engine.CallType;
+import com.video_call.FastCall;
 import com.video_call.NotificationPayloadData;
 import com.video_call.util.NotificationHelper;
 import com.video_call.util.PermissionUtil;
@@ -43,9 +43,9 @@ public class MainActivity extends AppCompatActivity {
                     notificationPayloadData.setImage("Eslam");
                     notificationPayloadData.setCallState(CallState.ONGOING);
                     notificationPayloadData.setCallType(CallType.VIDEO);
-                    new CallFast.CallActivityBuilder(notificationPayloadData)
+                    new FastCall.CallActivityBuilder(notificationPayloadData)
                             .show(MainActivity.this);
-                    CallFast.getCallConfig().setOnEndCallListener(new CallConfig.CallListener.OnCallListener() {
+                    FastCall.getCallConfig().setOnEndCallListener(new CallConfig.CallListener.OnCallListener() {
                         @Override
                         public void OnEnd(boolean OnEnd, long callDurationInMillis, AppCompatActivity appCompatActivity) {
                             Toast.makeText(MainActivity.this,"EndV3"+callDurationInMillis+"",Toast.LENGTH_LONG).show();
