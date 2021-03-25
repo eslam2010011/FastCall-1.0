@@ -26,8 +26,8 @@ import com.bumptech.glide.request.target.SizeReadyCallback;
 import com.bumptech.glide.request.target.Target;
 import com.video_call.Audio.ImAudioEx;
 import com.video_call.CallConfig;
-import com.video_call.CallFast;
-import com.video_call.Engine.CallEngine;
+ import com.video_call.Engine.CallEngine;
+import com.video_call.FastCall;
 import com.video_call.NotificationPayloadData;
 import com.video_call.R;
  import com.video_call.Service.VoIPActionsReceiver;
@@ -64,14 +64,14 @@ public class NotificationHelper extends ContextWrapper {
             if (CallConfig.getImAudio() == null) {
                 soundUri = Uri.parse(
                         "android.resource://" +
-                                CallFast.getContext().getApplicationContext().getPackageName() +
+                                FastCall.getContext().getApplicationContext().getPackageName() +
                                 "/" +
                                 R.raw.video_chat_incoming_call);
             } else {
 
                 soundUri = Uri.parse(
                         "android.resource://" +
-                                CallFast.getContext().getApplicationContext().getPackageName() +
+                                FastCall.getContext().getApplicationContext().getPackageName() +
                                 "/" +
                                 CallConfig.getImAudio().getInIncomingSound());
 
@@ -138,72 +138,19 @@ public class NotificationHelper extends ContextWrapper {
         if (CallConfig.getImAudio() == null) {
              soundUri = Uri.parse(
                     "android.resource://" +
-                            CallFast.getContext().getApplicationContext().getPackageName() +
+                            FastCall.getContext().getApplicationContext().getPackageName() +
                             "/" +
                             R.raw.video_chat_incoming_call);
         } else {
 
              soundUri = Uri.parse(
                     "android.resource://" +
-                            CallFast.getContext().getApplicationContext().getPackageName() +
+                            FastCall.getContext().getApplicationContext().getPackageName() +
                             "/" +
                             CallConfig.getImAudio().getInIncomingSound());
 
          }
 
-
-        Glide.with(CallFast.getContext())
-                .load(payloadData.getImage()).asBitmap().into(new Target<Bitmap>() {
-            @Override
-            public void onLoadStarted(Drawable placeholder) {
-
-            }
-
-            @Override
-            public void onLoadFailed(Exception e, Drawable errorDrawable) {
-
-            }
-
-            @Override
-            public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-
-            }
-
-            @Override
-            public void onLoadCleared(Drawable placeholder) {
-
-            }
-
-            @Override
-            public void getSize(SizeReadyCallback cb) {
-
-            }
-
-            @Override
-            public void setRequest(Request request) {
-
-            }
-
-            @Override
-            public Request getRequest() {
-                return null;
-            }
-
-            @Override
-            public void onStart() {
-
-            }
-
-            @Override
-            public void onStop() {
-
-            }
-
-            @Override
-            public void onDestroy() {
-
-            }
-        });
            return new NotificationCompat.Builder(getApplicationContext(), CALL_STATUS_CHANNEL)
                 .setContentTitle("Incoming call")
                 .setContentText(payloadData.getName() + " is calling")
