@@ -12,7 +12,6 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 public class CallDataHelper {
 
     static Gson gson = new Gson();
-
     public synchronized static NotificationPayloadData getCallData(SharedPreferences sp) {
 
         return gson.fromJson(sp.getString("call_data", "{state:{videoCallState:-1}}"), NotificationPayloadData.class);
