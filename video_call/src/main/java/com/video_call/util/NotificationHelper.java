@@ -26,11 +26,11 @@ import com.bumptech.glide.request.target.SizeReadyCallback;
 import com.bumptech.glide.request.target.Target;
 import com.video_call.Audio.ImAudioEx;
 import com.video_call.CallConfig;
- import com.video_call.Engine.CallEngine;
+import com.video_call.Engine.CallEngine;
 import com.video_call.FastCall;
 import com.video_call.NotificationPayloadData;
 import com.video_call.R;
- import com.video_call.Service.VoIPActionsReceiver;
+import com.video_call.Service.VoIPActionsReceiver;
 import com.video_call.Service.WebRtcCallService;
 import com.video_call.ui.CallActivity;
 
@@ -39,7 +39,7 @@ import com.video_call.ui.CallActivity;
  * Helper class to manage notification channels, and create notifications.
  */
 public class NotificationHelper extends ContextWrapper {
-    private  NotificationManager manager;
+    private NotificationManager manager;
     public static final String CALL_STATUS_CHANNEL = "CALL_STATUS_CHANNEL";
     public static final String SIGNALING_SERVICE_CHANNEL = "CALL_STATUS_CHANNEL";
 
@@ -58,7 +58,7 @@ public class NotificationHelper extends ContextWrapper {
                     .setUsage(AudioAttributes.USAGE_ALARM)
                     .build();
             NotificationChannel chan1 = new NotificationChannel(CALL_STATUS_CHANNEL,
-                "End", NotificationManager.IMPORTANCE_LOW);
+                    "Channel", NotificationManager.IMPORTANCE_DEFAULT);
             chan1.setLightColor(Color.GREEN);
             Uri soundUri;
             if (CallConfig.getImAudio() == null) {
@@ -81,6 +81,7 @@ public class NotificationHelper extends ContextWrapper {
             chan1.enableVibration(true);
             chan1.enableLights(false);
             chan1.setBypassDnd(true);
+
             getManager().createNotificationChannel(chan1);
         }
 
@@ -102,9 +103,9 @@ public class NotificationHelper extends ContextWrapper {
         PendingIntent endCallPendingIntent =
                 PendingIntent.getService(this, 0, endCallIntent, 0);
         Intent resultIntent = new Intent(this, CallActivity.class);
-        resultIntent.putExtra(WebRtcCallService.EXTRA_REMOTE_PEER,CallDataHelper.getCallData(getBaseContext().getSharedPreferences("Call",0)));
+        resultIntent.putExtra(WebRtcCallService.EXTRA_REMOTE_PEER, CallDataHelper.getCallData(getBaseContext().getSharedPreferences("Call", 0)));
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
-         stackBuilder.addNextIntentWithParentStack(resultIntent);
+        stackBuilder.addNextIntentWithParentStack(resultIntent);
         PendingIntent resultPendingIntent =
                 stackBuilder.getPendingIntent(0, PendingIntent.FLAG_CANCEL_CURRENT);
 
@@ -115,81 +116,82 @@ public class NotificationHelper extends ContextWrapper {
                 .setPriority(NotificationCompat.PRIORITY_MAX)
                 .setWhen(0)
                 .setColor(getResources().getColor(R.color.colorPrimary))
-                 .setOngoing(true)
+                .setOngoing(true)
                 .setContentIntent(resultPendingIntent)
                 .addAction(0, "End Call", endCallPendingIntent)
                 .setAutoCancel(true);
     }
 
 
-
     public NotificationCompat.Builder createIncomingCallNotification(NotificationPayloadData payloadData) {
-        CallDataHelper.saveCallData(payloadData,getBaseContext().getSharedPreferences("Call",0));
+        CallDataHelper.saveCallData(payloadData, getBaseContext().getSharedPreferences("Call", 0));
         Intent endCallIntent = new Intent(this, WebRtcCallService.class);
         Intent resultIntent = new Intent(this, CallActivity.class);
         resultIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_NO_USER_ACTION | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         //TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
-       // stackBuilder.addNextIntentWithParentStack(resultIntent);
+        // stackBuilder.addNextIntentWithParentStack(resultIntent);
         PendingIntent resultPendingIntent =
                 PendingIntent.getActivity(this, 0 /* Request code */, resultIntent,
                         PendingIntent.FLAG_ONE_SHOT);
 
         Uri soundUri;
         if (CallConfig.getImAudio() == null) {
-             soundUri = Uri.parse(
+            soundUri = Uri.parse(
                     "android.resource://" +
                             FastCall.getContext().getApplicationContext().getPackageName() +
                             "/" +
                             R.raw.video_chat_incoming_call);
         } else {
 
-             soundUri = Uri.parse(
+            soundUri = Uri.parse(
                     "android.resource://" +
                             FastCall.getContext().getApplicationContext().getPackageName() +
                             "/" +
                             CallConfig.getImAudio().getInIncomingSound());
 
-         }
+        }
 
-           return new NotificationCompat.Builder(getApplicationContext(), CALL_STATUS_CHANNEL)
+        return new NotificationCompat.Builder(getApplicationContext(), CALL_STATUS_CHANNEL)
                 .setContentTitle("Incoming call")
                 .setContentText(payloadData.getName() + " is calling")
                 .setSmallIcon(getSmallIcon())
                 .setPriority(NotificationCompat.PRIORITY_MAX)
                 .setWhen(0)
                 .setSound(soundUri)
-                .addAction(getCallAnswerAction(getBaseContext(),payloadData,R.drawable.btn_call_voice_accept,"ANSWERED"))
-                .addAction(getCallDeclineAction(getBaseContext(),payloadData,R.drawable.btn_call_end,"REJECTED"))
+                 .setShowWhen(true)
+                .setVibrate(new long[]{1000, 1000})
+                .addAction(getCallAnswerAction(getBaseContext(), payloadData, R.drawable.btn_call_voice_accept, "ANSWERED"))
+                .addAction(getCallDeclineAction(getBaseContext(), payloadData, R.drawable.btn_call_end, "REJECTED"))
                 .setOngoing(true)
                 .setContentIntent(resultPendingIntent)
-                 .setAutoCancel(true);
+                .setAutoCancel(true);
     }
-
 
 
     public static NotificationCompat.Action getCallAnswerAction(Context context, NotificationPayloadData notificationPayloadData, int iconResId, String titleResId) {
         Intent answerPendingIntent = new Intent(context, VoIPActionsReceiver.class);
         answerPendingIntent.setAction(WebRtcCallService.ANSWER_ACTION);
-        answerPendingIntent.putExtra("Call",notificationPayloadData);
-         PendingIntent endPendingIntent = PendingIntent.getBroadcast(context, 0, answerPendingIntent, PendingIntent.FLAG_CANCEL_CURRENT);
-         CharSequence answerTitle = titleResId;
+        answerPendingIntent.putExtra("Call", notificationPayloadData);
+        PendingIntent endPendingIntent = PendingIntent.getBroadcast(context, 0, answerPendingIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+        CharSequence answerTitle = titleResId;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             answerTitle = new SpannableString(answerTitle);
             ((SpannableString) answerTitle).setSpan(new ForegroundColorSpan(0xFF00AA00), 0, answerTitle.length(), 0);
         }
         return new NotificationCompat.Action(iconResId, answerTitle, endPendingIntent);
     }
-    public static NotificationCompat.Action getCallDeclineAction(Context context,NotificationPayloadData notificationPayloadData, int iconResId, String titleResId) {
+
+    public static NotificationCompat.Action getCallDeclineAction(Context context, NotificationPayloadData notificationPayloadData, int iconResId, String titleResId) {
         Intent endIntent = new Intent(context, VoIPActionsReceiver.class);
         endIntent.setAction(WebRtcCallService.DENY_ACTION);
-        endIntent.putExtra("Call",notificationPayloadData);
-         PendingIntent endPendingIntent = PendingIntent.getBroadcast(context, 0, endIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+        endIntent.putExtra("Call", notificationPayloadData);
+        PendingIntent endPendingIntent = PendingIntent.getBroadcast(context, 0, endIntent, PendingIntent.FLAG_CANCEL_CURRENT);
         CharSequence endTitle = titleResId;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             endTitle = new SpannableString(endTitle);
             ((SpannableString) endTitle).setSpan(new ForegroundColorSpan(0xFFF44336), 0, endTitle.length(), 0);
         }
-         return new NotificationCompat.Action(iconResId, endTitle, endPendingIntent);
+        return new NotificationCompat.Action(iconResId, endTitle, endPendingIntent);
     }
 
 

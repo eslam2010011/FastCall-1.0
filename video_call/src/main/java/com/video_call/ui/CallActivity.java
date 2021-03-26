@@ -219,7 +219,7 @@ public class CallActivity extends BaseRtcActivity2 {
         if (ellapsedTimeFormatter == null) {
             return;
         }
-        callScreen.setStatus(getString(R.string.WebRtcCallActivity__signal_s, ellapsedTimeFormatter.toString()));
+        callScreen.setStatus(getString(R.string.WebRtcCallActivity__signal_s2, ellapsedTimeFormatter.toString()));
     }
 
 

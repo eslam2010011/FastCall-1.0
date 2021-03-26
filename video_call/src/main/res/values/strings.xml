@@ -232,6 +232,8 @@
     <string name="frame_rate_value_with_unit">%d fps</string>
 
     <string name="WebRtcCallActivity__signal_s">MEDICAT %1$s</string>
+    <string name="WebRtcCallActivity__signal_s2">Time %1$s</string>
+
     <string name="WebRtcCallActivity__calling">Calling…</string>
 
 </resources>
